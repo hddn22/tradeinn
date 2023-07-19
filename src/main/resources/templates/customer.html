@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <meta charset="UTF-8">
+    <title></title>
+
+</head>
+<body>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <svg class="bi me-2" width="40" height="32">
+            <use xlink:href="#bootstrap"></use>
+        </svg>
+        <span class="fs-4">Vov4ik CryptoMagnat</span>
+    </a>
+
+    <ul class="nav nav-pills">
+        <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="/customer" class="nav-link active">Customers</a></li>
+        <li class="nav-item"><a href="/ordering" class="nav-link">Ordering</a></li>
+        <li class="nav-item"><a href="/msgsend" class="nav-link">Message Sender</a></li>
+    </ul>
+</header>
+
+<div class="container">
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Профиль пользователя</button>
+
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel" th:text="${customer.getUserName()} + '(' + ${customer.getTelegramUserId()} + ')'"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" >Шаг</span>
+                <input type="text" class="form-control" aria-label="Пример размера поля ввода" aria-describedby="inputGroup-sizing-sm"  th:value="${customer.getStep()}" disabled>
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" >Количество заказов</span>
+                <input type="text" class="form-control" aria-label="Пример размера поля ввода" aria-describedby="inputGroup-sizing-sm"  th:value="${ordering.stream().count()}" disabled>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary edit-btn-second" >
+                    Изменить
+                </button>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Сервис</th>
+            <th scope="col">Аккаунт</th>
+            <th scope="col">Сумма</th>
+            <th scope="col">Завершён?</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order: ${ordering}" class="table-row">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.chosenService}"></td>
+            <td th:text="${order.chosenAccount}"></td>
+            <td th:text="${order.chosenSum}"></td>
+            <td th:text="${order.finalise}"></td>
+            <td style="display: flex; justify-content: space-around;">
+                <button type="button" class="btn btn-primary edit-btn" >
+                    Изменить
+                </button>
+                <form th:action="@{/order/} + ${order.id} + '/' + ${customer.getTelegramUserId()}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit" class="btn btn-danger">X</button>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">test</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+
+                <form class="row g-3" action="#" th:action="@{/order/} + ${customer.getTelegramUserId()} + '/'" method="post" th:object="${orderEdit}">
+                    <input id="validationDefault00" type="hidden" th:field="*{id}">
+                    <div class="col-md-16">
+                        <label for="validationDefault01" class="form-label">Сервис</label>
+                        <select class="form-select" id="validationDefault01" required th:field="*{chosenService}">
+                            <option selected disabled value=""></option>
+                            <option value="TradeInn (BikeInn, RunnerInn, etc.)">TradeInn (BikeInn, RunnerInn, etc.)</option>
+                            <option value="StarBike">StarBike</option>
+                            <option value="Любой другой зарубежный сервис(условия индивидуальны)">Любой другой зарубежный сервис(условия индивидуальны)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-16">
+                        <label for="validationDefault02" class="form-label">Аккаунт</label>
+                        <select class="form-select" id="validationDefault02" th:field="*{chosenAccount}">
+                            <option selected disabled value="">Choose...</option>
+                            <option value="Мой">Мой</option>
+                            <option value="Ваш">Ваш</option>
+                        </select>
+                    </div>
+                    <div class="col-md-16">
+                        <label for="validationDefault03" class="form-label">Сумма</label>
+                        <select class="form-select" id="validationDefault03" required th:field="*{chosenSum}">
+                            <option selected disabled value="">Choose...</option>
+                            <option value="До 20тыс.руб.">До 20тыс.руб</option>
+                            <option value="От 20тыс.руб. до 40тыс.руб.">От 20тыс.руб. до 40тыс.руб.</option>
+                            <option value="Свыше 40тыс.руб.">Свыше 40тыс.руб.</option>
+                        </select>
+                    </div>
+                    <div class="col-md-16">
+                        <label for="validationDefault04" class="form-label">Подтверждён</label>
+                        <select class="form-select" id="validationDefault04" required th:field="*{finalise}">
+                            <option value="true" >true</option>
+                            <option value="false" >false</option>
+
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit button" class="btn btn-primary">Изменить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropSecond" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabelSecond">test</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+
+                <form class="row g-3" action="#" th:action="@{/customer/} + ${customer.getTelegramUserId()} + '/'" method="post" th:object="${customerChangeStep}">
+                    <input id="validationDefault05" type="hidden" th:field="*{id}">
+                    <div class="col-md-16">
+                        <label for="validationDefault01" class="form-label">Шаг</label>
+                        <select class="form-select" id="validationDefault06" required th:field="*{step}">
+                            <option th:each="value : ${T(com.example.tradeinn.component.Step).values()}" th:value="${value}" th:text="${value}"></option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit button" class="btn btn-primary">Изменить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('.edit-btn').on('click', function() {
+            var orderId = $(this).closest('tr').find('td:first-child').html();
+            var service = $(this).closest('tr').find('td:eq(1)').html();
+            var account = $(this).closest('tr').find('td:eq(2)').html();
+            var sum = $(this).closest('tr').find('td:eq(3)').html();
+            var finalise = $(this).closest('tr').find('td:eq(4)').html();
+
+            $('#validationDefault00').val(orderId)
+            $('#validationDefault01').val(service);
+            $('#validationDefault02').val(account);
+            $('#validationDefault03').val(sum);
+            $('#validationDefault04').val(finalise);
+
+
+            $('#staticBackdrop').modal('show');
+
+        });
+    });
+
+    $(document).ready(function() {
+        $('.edit-btn-second').on('click', function() {
+            $('#staticBackdropSecond').modal('show');
+        });
+    });
+</script>
+</body>
+</html>
