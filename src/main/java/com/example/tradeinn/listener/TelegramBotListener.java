@@ -6,6 +6,7 @@ import com.example.tradeinn.entity.Customer;
 import com.example.tradeinn.handlers.*;
 import com.example.tradeinn.service.CustomerService;
 import com.example.tradeinn.service.OrderingService;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,17 +18,19 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.validation.ValidationException;
 import java.util.concurrent.CompletableFuture;
 
-
+@Service
 public class TelegramBotListener extends TelegramLongPollingBot {
     CustomerService customerService;
     OrderingService orderingService;
 
 
-    public TelegramBotListener(String token, CustomerService customerService, OrderingService orderingService) {
-        super(token);
+    public TelegramBotListener(CustomerService customerService, OrderingService orderingService) {
+        super(BotConfig.TOKEN);
         this.customerService = customerService;
         this.orderingService = orderingService;
     }
+
+
 
     @Override
     public void onUpdateReceived(Update update) {

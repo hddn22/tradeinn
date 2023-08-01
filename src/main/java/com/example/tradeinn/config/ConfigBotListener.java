@@ -13,9 +13,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class ConfigBotListener {
 
     @Bean
-    public TelegramBotsApi telegramBotListener(CustomerService customerService, OrderingService orderingService) throws TelegramApiException {
+    public TelegramBotsApi telegramBotsApi(CustomerService customerService, OrderingService orderingService) throws TelegramApiException {
+            String token = BotConfig.TOKEN;
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new TelegramBotListener(BotConfig.TOKEN, customerService, orderingService));
+            telegramBotsApi.registerBot(new TelegramBotListener(customerService, orderingService));
             return telegramBotsApi;
     }
 }

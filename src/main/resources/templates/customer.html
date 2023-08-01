@@ -30,7 +30,9 @@
 
 <div class="container">
     <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Профиль пользователя</button>
-
+    <button type="button" class="btn btn-primary edit-btn-third" >
+        Написать
+    </button>
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasScrollingLabel" th:text="${customer.getUserName()} + '(' + ${customer.getTelegramUserId()} + ')'"></h5>
@@ -166,6 +168,34 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="staticBackdropThird" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabelThird">test</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+
+                <form class="row g-3" action="#" th:action="@{/customer/} + ${customer.getTelegramUserId()} + '/send'" method="post" th:object="${customerChangeStep}">
+                    <input id="validationDefault07" type="hidden" th:field="*{id}">
+                    <div class="col-md-16">
+                        <label for="validationDefault01" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">Текст отправляемый ботом </span>
+                            <textarea class="form-control" aria-label="With textarea" name="message"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit button" class="btn btn-primary">Отправить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
         $('.edit-btn').on('click', function() {
@@ -190,6 +220,11 @@
     $(document).ready(function() {
         $('.edit-btn-second').on('click', function() {
             $('#staticBackdropSecond').modal('show');
+        });
+    });
+    $(document).ready(function() {
+        $('.edit-btn-third').on('click', function() {
+            $('#staticBackdropThird').modal('show');
         });
     });
 </script>

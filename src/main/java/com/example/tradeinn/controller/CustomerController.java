@@ -1,17 +1,16 @@
 package com.example.tradeinn.controller;
 
-import com.example.tradeinn.component.Step;
 import com.example.tradeinn.entity.Customer;
 import com.example.tradeinn.entity.Ordering;
+import com.example.tradeinn.listener.TelegramBotListener;
 import com.example.tradeinn.service.CustomerService;
 import com.example.tradeinn.service.OrderingService;
+import com.example.tradeinn.utils.ReplyKeyboardUtil;
+import com.example.tradeinn.utils.SendMessageUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +19,7 @@ import java.util.List;
 public class CustomerController {
     CustomerService customerService;
     OrderingService orderingService;
+    TelegramBotListener tgBot;
 
     @GetMapping("customer")
     String getCustomerList(Model model) {
@@ -49,5 +49,10 @@ public class CustomerController {
         return "redirect:/customer/" + id + "/";
     }
 
-
+    @PostMapping("customer/{id}/send")
+    public String sendTelegramMessage(@PathVariable Long id, @RequestParam("message") String message) {
+        System.out.println(message);
+        tgBot.executeAsync(SendMessageUtil.sendMessageUtil(id, message, ReplyKeyboardUtil.MAIN_MENU_BUTTONS));
+        return "redirect:/customer/" + id + "/";
+    }
 }
