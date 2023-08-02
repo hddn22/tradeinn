@@ -58,7 +58,7 @@ public class UserService implements UserDetailsService {
         if (userFromDB != null) {
             return false;
         }
-
+        user.setUsername(user.getUsername());
         user.setRoles(Collections.singleton(new Role(2L, "ROLE_ADMIN")));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
