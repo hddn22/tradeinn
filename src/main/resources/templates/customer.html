@@ -33,6 +33,9 @@
     <button type="button" class="btn btn-primary edit-btn-third" >
         Написать
     </button>
+    <button type="button" class="btn btn-primary edit-btn-four" >
+        Лог сообщений
+    </button>
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasScrollingLabel" th:text="${customer.getUserName()} + '(' + ${customer.getTelegramUserId()} + ')'"></h5>
@@ -91,7 +94,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">test</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Изменение заказа</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
@@ -146,7 +149,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabelSecond">test</h5>
+                <h5 class="modal-title" id="staticBackdropLabelSecond">Отправка сообщения</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
@@ -170,10 +173,10 @@
 </div>
 
 <div class="modal fade" id="staticBackdropThird" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog ">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabelThird">test</h5>
+                <h5 class="modal-title" id="staticBackdropLabelThird">Отправить сообщение</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
@@ -195,6 +198,31 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="staticBackdropFour" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabelFour">История сообщений</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="msg border" role="alert" aria-live="assertive" aria-atomic="true" th:each="log: ${logs}">
+                    <div class="toast-header">
+                        <strong class="me-auto" th:text="${log.name}"></strong>
+                        <small class="text-body-secondary" th:text="${log.date}"></small>
+                    </div>
+                    <div class="toast-body" th:text="${log.message}" >
+                    </div>
+                </div>
+            </div>
+            <form th:action="@{/customer/} + ${customer.getTelegramUserId()} + '/deleteLog'" method="post">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="submit button" class="btn btn-primary" >Очистить лог</button>
+            </div>
+            </form>
 </div>
 <script>
     $(document).ready(function() {
@@ -225,6 +253,11 @@
     $(document).ready(function() {
         $('.edit-btn-third').on('click', function() {
             $('#staticBackdropThird').modal('show');
+        });
+    });
+    $(document).ready(function() {
+        $('.edit-btn-four').on('click', function() {
+            $('#staticBackdropFour').modal('show');
         });
     });
 </script>

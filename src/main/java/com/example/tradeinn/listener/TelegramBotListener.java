@@ -5,7 +5,10 @@ import com.example.tradeinn.config.BotConfig;
 import com.example.tradeinn.entity.Customer;
 import com.example.tradeinn.handlers.*;
 import com.example.tradeinn.service.CustomerService;
+import com.example.tradeinn.service.LogsService;
 import com.example.tradeinn.service.OrderingService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -16,18 +19,23 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.validation.ValidationException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+
 public class TelegramBotListener extends TelegramLongPollingBot {
     CustomerService customerService;
     OrderingService orderingService;
+    LogsService logsService;
 
 
-    public TelegramBotListener(CustomerService customerService, OrderingService orderingService) {
+    public TelegramBotListener(CustomerService customerService, OrderingService orderingService, LogsService logsService) {
         super(BotConfig.TOKEN);
         this.customerService = customerService;
         this.orderingService = orderingService;
+        this.logsService = logsService;
     }
 
 
@@ -35,6 +43,7 @@ public class TelegramBotListener extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
+            logsService.saveCustomerMessage(update);
             Customer customer = customerService.findByTelegramUserId(update.getMessage().getFrom().getId());
             if (customer == null) {
                 executeAsync((SendPhoto) RegisterNewCustomerHandler.registerNewCustomer(update, customerService, orderingService));
@@ -54,16 +63,27 @@ public class TelegramBotListener extends TelegramLongPollingBot {
             } else if (!update.getMessage().getText().equals("☠️Отмена") && !customer.getStep().equals(Step.INIT)) {
                 executeAsync((SendMessage) OrderMenuHandler.orderingButton(update, customerService, orderingService));
             }
+
         }
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+//        System.out.println(update.getMessage().getText());
+
     }
 
     public CompletableFuture<Message> executeAsync(SendPhoto message) {
+//        System.out.println(message.toString());
+        logsService.saveBotMessage(message);
         return super.executeAsync(message);
     }
 
     public void executeAsync(SendMessage message) {
         try {
             super.executeAsync(message);
+            logsService.saveBotMessage(message);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

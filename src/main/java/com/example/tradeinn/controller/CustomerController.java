@@ -1,9 +1,11 @@
 package com.example.tradeinn.controller;
 
 import com.example.tradeinn.entity.Customer;
+import com.example.tradeinn.entity.Logs;
 import com.example.tradeinn.entity.Ordering;
 import com.example.tradeinn.listener.TelegramBotListener;
 import com.example.tradeinn.service.CustomerService;
+import com.example.tradeinn.service.LogsService;
 import com.example.tradeinn.service.OrderingService;
 import com.example.tradeinn.utils.ReplyKeyboardUtil;
 import com.example.tradeinn.utils.SendMessageUtil;
@@ -19,6 +21,7 @@ import java.util.List;
 public class CustomerController {
     CustomerService customerService;
     OrderingService orderingService;
+    LogsService logsService;
     TelegramBotListener tgBot;
 
     @GetMapping("customer")
@@ -34,10 +37,12 @@ public class CustomerController {
         Customer customer = customerService.findByTelegramUserId(id);
         Customer customerChangeStep = customerService.findByTelegramUserId(id);
         List<Ordering> ordering = orderingService.getListOrderingByCustomer(customer);
+        List<Logs> logs = customer.getLogs();
         model.addAttribute("customer", customer);
         model.addAttribute("ordering", ordering);
         model.addAttribute("orderEdit", orderEdit);
         model.addAttribute("customerChangeStep", customerChangeStep);
+        model.addAttribute("logs", logs);
         return "customer";
     }
 
@@ -51,8 +56,13 @@ public class CustomerController {
 
     @PostMapping("customer/{id}/send")
     public String sendTelegramMessage(@PathVariable Long id, @RequestParam("message") String message) {
-        System.out.println(message);
         tgBot.executeAsync(SendMessageUtil.sendMessageUtil(id, message, ReplyKeyboardUtil.MAIN_MENU_BUTTONS));
+        return "redirect:/customer/" + id + "/";
+    }
+
+    @PostMapping("customer/{id}/deleteLog")
+    public String deleteLogsHistory(@PathVariable Long id) {
+        logsService.deleteLogHistoryByCustomerId(id);
         return "redirect:/customer/" + id + "/";
     }
 }
