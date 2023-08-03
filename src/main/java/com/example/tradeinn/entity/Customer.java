@@ -7,6 +7,7 @@ import lombok.Setter;
 
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,6 +20,8 @@ public class Customer {
     private Long telegramUserId;
     private String userName;
     private Step step;
+    @Column(name = "date_column", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date date;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ordering> ordering;

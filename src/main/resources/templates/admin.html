@@ -41,7 +41,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user: ${allUsers}" class="table-row">
+        <tr th:each="user: ${allUsers}" th:unless="${user.id == 1}" class="table-row">
 <!--            th:onclick="'window.location=\'admin/gt/' + ${user.id} + '/\';'"-->
             <td th:text="${user.id}"></td>
             <td th:text="${user.username}"></td>

@@ -14,6 +14,8 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Date;
+
 @Service
 
 public class RegisterCustomerButtonStrategy implements ButtonStrategy{
@@ -25,6 +27,7 @@ public class RegisterCustomerButtonStrategy implements ButtonStrategy{
         customer.setUserName(update.getMessage().getFrom().getUserName());
         customer.setTelegramUserId(update.getMessage().getFrom().getId());
         customer.setStep(Step.INIT);
+        customer.setDate(new Date());
         customerService.saveCustomer(customer);
         String path = "tradeinn.jpg";
         return SendMessageUtil.sendPhotoUtil(update.getMessage().getFrom().getId(), "Привет! \n" +

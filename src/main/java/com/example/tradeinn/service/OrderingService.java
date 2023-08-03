@@ -6,6 +6,7 @@ import com.example.tradeinn.repository.OrderingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +51,7 @@ public class OrderingService {
 
 
     public boolean save(Ordering ordering) {
+        ordering.setDate(new Date());
         orderingRepository.save(ordering);
         return true;
     }
