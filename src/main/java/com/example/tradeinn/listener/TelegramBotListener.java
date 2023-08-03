@@ -24,7 +24,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-
 public class TelegramBotListener extends TelegramLongPollingBot {
     CustomerService customerService;
     OrderingService orderingService;

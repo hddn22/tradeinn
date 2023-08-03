@@ -65,6 +65,7 @@
             <th scope="col">Аккаунт</th>
             <th scope="col">Сумма</th>
             <th scope="col">Завершён?</th>
+            <th scope="col">Дата</th>
             <th scope="col"></th>
         </tr>
         </thead>
@@ -75,6 +76,7 @@
             <td th:text="${order.chosenAccount}"></td>
             <td th:text="${order.chosenSum}"></td>
             <td th:text="${order.finalise}"></td>
+            <td th:text="${order.date}"></td>
             <td style="display: flex; justify-content: space-around;">
                 <button type="button" class="btn btn-primary edit-btn" >
                     Изменить

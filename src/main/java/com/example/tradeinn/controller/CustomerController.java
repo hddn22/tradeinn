@@ -56,7 +56,7 @@ public class CustomerController {
 
     @PostMapping("customer/{id}/send")
     public String sendTelegramMessage(@PathVariable Long id, @RequestParam("message") String message) {
-        tgBot.executeAsync(SendMessageUtil.sendMessageUtil(id, message, ReplyKeyboardUtil.MAIN_MENU_BUTTONS));
+        tgBot.executeAsync(SendMessageUtil.sendMessageUtil(id, message, null));
         return "redirect:/customer/" + id + "/";
     }
 
