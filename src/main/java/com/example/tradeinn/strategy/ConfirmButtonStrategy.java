@@ -12,6 +12,7 @@ import com.example.tradeinn.utils.SendMessageUtil;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -29,7 +30,8 @@ public class ConfirmButtonStrategy implements ButtonStrategy {
     String time;
     Date globalDate;
 
-//    TelegramBotListener tgBot;
+
+
 
     @Override
     public PartialBotApiMethod<Message> sendMessage(Update update, CustomerService customerService, OrderingService orderingService) {
@@ -56,7 +58,7 @@ public class ConfirmButtonStrategy implements ButtonStrategy {
                             + "\uD83D\uDC8E Сервис: " + ordering.getChosenService()
                             + "\n\n\uD83E\uDD77\uD83C\uDFFB Аккаунт: " + ordering.getChosenAccount()
                             + "\n\n\uD83D\uDCB8 Сумма: " + ordering.getChosenSum();
-//                    tgBot.executeAsync(SendMessageUtil.sendPhotoUtil(Long.parseLong(BotConfig.CHAT_ID), message, null, null));
+//                    tgBot.executeAsync(SendMessageUtil.sendMessageUtil(BotConfig.CHAT_ID, message, null));
                     return SendMessageUtil.sendMessageUtil(update.getMessage().getChatId(), "Ваш заказ отправлен✅\nC вами скоро свяжутся.\n", ReplyKeyboardUtil.MAIN_MENU_BUTTONS);
                 case "Удалить ❌":
                     customer.setStep(Step.INIT);
@@ -78,7 +80,7 @@ public class ConfirmButtonStrategy implements ButtonStrategy {
                             + "\uD83D\uDC8E Сервис: " + ordering.getChosenService()
                             + "\n\n\uD83E\uDD77\uD83C\uDFFB Аккаунт: " + ordering.getChosenAccount()
                             + "\n\n\uD83D\uDCB8 Сумма: " + ordering.getChosenSum();
-//                    tgBot.executeAsync(SendMessageUtil.sendPhotoUtil(Long.parseLong(BotConfig.CHAT_ID), message, null, null));
+//                    tgBot.executeAsync(SendMessageUtil.sendPhotoUtil(BotConfig.CHAT_ID, message, null, null));
 
                     return SendMessageUtil.sendMessageUtil(update.getMessage().getChatId(), "Ваш заказ удалён ❌\n", ReplyKeyboardUtil.MAIN_MENU_BUTTONS);
                 case "Изменить \uD83D\uDCDD":
@@ -91,5 +93,6 @@ public class ConfirmButtonStrategy implements ButtonStrategy {
         }
         return null;
     }
+
 }
 

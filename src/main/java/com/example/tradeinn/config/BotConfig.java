@@ -10,7 +10,7 @@ import java.util.Properties;
 @Configuration
 public class BotConfig {
     public final static String TOKEN;
-    public final static String CHAT_ID;
+    public final static Long CHAT_ID;
     public final static String BOT_NAME;
 
     static Properties property = new Properties();
@@ -20,7 +20,7 @@ public class BotConfig {
             property.load(inputStream);
 
             TOKEN = property.getProperty("bot.token");
-            CHAT_ID = property.getProperty("bot.chatId");
+            CHAT_ID = Long.valueOf(property.getProperty("bot.chatId"));
             BOT_NAME = property.getProperty("bot.name");
         } catch (IOException e) {
             throw new RuntimeException(e);

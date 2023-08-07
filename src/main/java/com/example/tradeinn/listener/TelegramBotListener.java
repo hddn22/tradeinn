@@ -9,6 +9,7 @@ import com.example.tradeinn.service.LogsService;
 import com.example.tradeinn.service.OrderingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -23,7 +24,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletableFuture;
 
-@Service
+@Component
 public class TelegramBotListener extends TelegramLongPollingBot {
     CustomerService customerService;
     OrderingService orderingService;
@@ -60,21 +61,14 @@ public class TelegramBotListener extends TelegramLongPollingBot {
                     executeAsync(msg);
                 }
             } else if (!update.getMessage().getText().equals("☠️Отмена") && !customer.getStep().equals(Step.INIT)) {
-                executeAsync((SendMessage) OrderMenuHandler.orderingButton(update, customerService, orderingService));
+                executeAsync((SendMessage) OrderMenuHandler.orderingButton(update, customerService, orderingService, this));
             }
 
         }
-        try {
-            System.setOut(new PrintStream(System.out, true, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-//        System.out.println(update.getMessage().getText());
 
     }
 
     public CompletableFuture<Message> executeAsync(SendPhoto message) {
-//        System.out.println(message.toString());
         logsService.saveBotMessage(message);
         return super.executeAsync(message);
     }
